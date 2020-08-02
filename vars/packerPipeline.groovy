@@ -21,7 +21,15 @@ def call(Map params = [:]) {
         stages {
             stage('Clean') {
                 steps {
-                    sh 'rm -rf output-*'
+                    sh 'rm -rf output-* roles'
+                }
+            }
+            stage ('Download Roles') {
+                when {
+                    expression { return fileExists("requirements.yml") }
+                }
+                steps {
+                    sh "ansible-galaxy install -r requirements.yml -p roles"
                 }
             }
             stage('Build') {
